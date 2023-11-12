@@ -22,12 +22,10 @@ const emailValidate = ref(false);
 const uniqueUsername = ref(false);
 const uniqueEmail = ref(false);
 const nullOfUser = ref(false)
+const nullOfGender = ref()
 
 const registerUser = async () => {
-  console.log(user_password.value);
-  console.log(user_confirm_password.value);
-  console.log(user_name.value);
-
+  
   uniqueUsername.value = false;
   matchPass.value = false;
   passwordValidate.value = false;
@@ -35,13 +33,17 @@ const registerUser = async () => {
   emailValidate.value = false;
   uniqueEmail.value = false;
   nullOfUser.value = false
+  nullOfGender.value = false
+
   try {
     const specialCharacter = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
     const uppercaseLetter = /[A-Z]/;
     const lowercaseLetter = /[a-z]/;
-    const emailValidator =
-      /^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/;
+    const emailValidator = /^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$/;
 
+    if(user_gender.value === undefined){
+      nullOfGender.value = true
+    }
     if(user_name.value === undefined){
       nullOfUser.value = true
     }
@@ -116,11 +118,9 @@ const registerUser = async () => {
         errorMessage.detail.forEach((error) => {
 
           if (error.field === "username") {
-            console.log("error username");
             return (uniqueUsername.value = true);
           }
           if (error.field === "email") {
-            console.log("error email");
             return (uniqueEmail.value = true);
           }
         });
@@ -143,12 +143,12 @@ const registerUser = async () => {
 
           <div>
             Username: <span class="text-red-500">*</span
-            ><span v-if="uniqueUsername" class="ann-error-username text-red-500"
+            ><span v-if="uniqueUsername" class=" text-red-500"
               >username does not unique</span>
 
             <input
               type="text"
-              class="w-full form-control rounded-md bg-white shadow-lg ann-username pl-1"
+              class="w-full form-control rounded-md bg-white shadow-lg pl-1"
               v-model.trim="user_username"
               minlength="1"
               maxlength="45"
@@ -159,15 +159,15 @@ const registerUser = async () => {
             Password: <span class="text-red-500">*</span
             ><span
               v-if="passwordValidate"
-              class="text-red-500 ann-error-password"
+              class="text-red-500"
               >must be 8-14 characters long, at least 1 of uppercase, lowercase,
               number and special characters </span
-            ><span v-if="matchPass" class="text-red-500 ann-error-password"
+            ><span v-if="matchPass" class="text-red-500 "
               >The password DOES NOT match</span
             >
             <input
               type="password"
-              class="w-full form-control rounded-md bg-white shadow-lg ann-password pl-1"
+              class="w-full form-control rounded-md bg-white shadow-lg  pl-1"
               v-model.trim="user_password"
               minlength="8"
               maxlength="14"
@@ -178,13 +178,13 @@ const registerUser = async () => {
             Confirm password:
             <span
               v-if="confirmPasswordValidate"
-              class="text-red-500 ann-error-confirm-username"
+              class="text-red-500 "
               >must be 8-14 characters long, at least 1 of uppercase, lowercase,
               number and special characters</span
             >
             <input
               type="password"
-              class="w-full form-control rounded-md bg-white shadow-lg ann-confirm-password pl-1"
+              class="w-full form-control rounded-md bg-white shadow-lg  pl-1"
               v-model.trim="user_confirm_password"
               minlength="8"
               maxlength="14"
@@ -195,7 +195,7 @@ const registerUser = async () => {
             Name: <span class="text-red-500">*</span>
             <span
               v-if="nullOfUser"
-              class="text-red-500 ann-error-confirm-username"
+              class="text-red-500 "
               >name does not empty</span
             >
             <input
@@ -221,10 +221,10 @@ const registerUser = async () => {
           </div>
           <div>
             Email: <span class="text-red-500">*</span
-            ><span v-if="uniqueEmail" class="ann-error-email text-red-500"
+            ><span v-if="uniqueEmail" class=" text-red-500"
               >email does not unique</span
             >
-            <span v-if="emailValidate" class="ann-error-email text-red-500"
+            <span v-if="emailValidate" class=" text-red-500"
               >email does not valid</span
             >
             <input
@@ -238,7 +238,9 @@ const registerUser = async () => {
           </div>
 
           <div class="dropdown pt-5">
-            <div class="">Gender:</div>
+            <div class="">Gender: 
+              <span v-if="nullOfGender" class=" text-red-500"
+              >Gender does not empty</span></div>
             <div>
               <select
                 v-model="user_gender"
@@ -246,6 +248,7 @@ const registerUser = async () => {
                 id="gender"
                 class="border border-black rounded-md bg-white shadow-lg ann-role"
               >
+              
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Other</option>
